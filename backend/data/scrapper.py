@@ -34,32 +34,29 @@ class HistoricalDataScrapper():
             url = "https://www.investing.com/instruments/HistoricalDataAjax"
             r = requests.post(url, headers=head, data=params)
             if r.status_code != 200:
-                raise ConnectionError("ERR#0015: error " + str(r.status_code) + ", try again later.")
+                raise ConnectionError("Erro" + str(r.status_code) + ", tente novamente mais tarde.")
             root_ = fromstring(r.text)
             path_ = root_.xpath(".//table[@id='curr_table']/tbody/tr")
             result = list()
             if path_:
                 for elements_ in path_:
                     if elements_.xpath(".//td")[0].text_content() == 'No results found':
-                        raise IndexError("ERR#0080: commodity information unavailable or not found.")
+                        raise IndexError("Dados do ativo não disponíveis ou não encontrados.")
                     info = []
                     for nested_ in elements_.xpath(".//td"):
                         info.append(nested_.get('data-real-value'))
-                    commodity_date = datetime.strptime(str(datetime.fromtimestamp(int(info[0]), tz=pytz.timezone('GMT')).date()), '%Y-%m-%d')
+                    date = datetime.strptime(str(datetime.fromtimestamp(int(info[0]), tz=pytz.timezone('GMT')).date()), '%Y-%m-%d')
                     
-                    commodity_close = float(info[1].replace(',', ''))
-                    commodity_open = float(info[2].replace(',', ''))
-                    commodity_high = float(info[3].replace(',', ''))
-                    commodity_low = float(info[4].replace(',', ''))
-                    commodity_volume = int(info[5])
-                    result.insert(len(result),{'Data':commodity_date,ativo:commodity_close})
+                    close = float(info[1].replace(',', ''))
+                    open = float(info[2].replace(',', ''))
+                    high = float(info[3].replace(',', ''))
+                    low = float(info[4].replace(',', ''))
+                    volume = int(info[5])
+                    result.insert(len(result),{'Data':date,ativo:close})
                     result = result[::-1]
                     df = pd.DataFrame.from_records([value for value in result])
                     df.set_index("Data", inplace=True)
             else:
-                raise RuntimeError("ERR#0004: data retrieval error while scraping.")
+                raise RuntimeError("Erro ao tentar obter os dados.")
             df_[ativo] = df[ativo].fillna(method='ffill')
-        print("Chamou scrapper")
         return df_.dropna()
-
-

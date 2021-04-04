@@ -13,21 +13,20 @@ def get_gold_PE_grid(start_date, end_date, ativos_dict):
     coefs = modelo.coef_
     intercept = modelo.intercept_
     last_prices = df.iloc[-1]
-    #poderia ser trazido a partir de algum DB
+    
+    #poderia ser trazido a partir de algum DB ou um novo método no scrapper
     EPS_2020 = 1.31
-    # pe_grid = {}
+
     pegrid = PEGrid()
 
     #GOLD = A*Gold Futures + B*Copper Futures + C
     print("Equação: Barrick Gold Price = "+str(round(coefs[0],2))+"*Gold Price "+str(round(coefs[1],2))+"*Copper Price "+str(round(intercept,2)))
     print(df.iloc[-1])
-    i = 0
+
     for x in range(0,11):
         for y in range(0,11):
             element = PEGridElement(get_perc_P_var(x),get_perc_P_var(y),round((get_perc_P_var(y)*last_prices["Gold Futures"]*coefs[0] + get_perc_P_var(x)*last_prices["Cobre Futuros"]*coefs[1] + last_prices["GOLD"])/EPS_2020,2))
-            # pe_grid[i] = [get_perc_P_var(x),get_perc_P_var(y),round((get_perc_P_var(y)*last_prices["Gold Futures"]*coefs[0] + get_perc_P_var(x)*last_prices["Cobre Futuros"]*coefs[1] + last_prices["GOLD"])/EPS_2020,2)]
             pegrid.add_element(element)
-            i = i+1
     return pegrid.to_JSON()
 
 def get_perc_P_var(x):

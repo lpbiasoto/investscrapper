@@ -3,12 +3,11 @@ from flask_caching import Cache
 from business.pe_analysis import *
 
 config = {
-    "DEBUG": True,          # some Flask specific configs
-    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
+    "DEBUG": True,
+    "CACHE_TYPE": "SimpleCache",
     "CACHE_DEFAULT_TIMEOUT": 300
 }
 app = Flask(__name__)
-# tell Flask to use the above defined config
 app.config.from_mapping(config)
 cache = Cache(app)
 
@@ -31,8 +30,6 @@ def gold_PE_grid():
     response.status_code = 200
     print(response)
     return response
-
-# app.run(debug=True, host='0.0.0.0')
 
 @cache.memoize(86400)
 def get_yearly_PE_grid(start_date, end_date, ativos_dict):
