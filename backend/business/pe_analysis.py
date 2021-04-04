@@ -5,7 +5,7 @@ from models.pe_grid import PEGrid
 from datetime import datetime, timedelta
 import numpy as np
 
-def get_gold_PE_grid(ativos_dict):
+def get_gold_PE_grid(start_date, end_date, ativos_dict):
     
     df = HistoricalDataScrapper().get_data(datetime.now().date()-timedelta(365), datetime.now().date(), ativos_dict)
     modelo = LinearRegressionModel().train_model(df, response_var="GOLD")
@@ -28,8 +28,6 @@ def get_gold_PE_grid(ativos_dict):
             # pe_grid[i] = [get_perc_P_var(x),get_perc_P_var(y),round((get_perc_P_var(y)*last_prices["Gold Futures"]*coefs[0] + get_perc_P_var(x)*last_prices["Cobre Futuros"]*coefs[1] + last_prices["GOLD"])/EPS_2020,2)]
             pegrid.add_element(element)
             i = i+1
-
-    print(pegrid.to_JSON())
     return pegrid.to_JSON()
 
 def get_perc_P_var(x):

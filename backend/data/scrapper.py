@@ -59,7 +59,7 @@ class HistoricalDataScrapper():
             else:
                 raise RuntimeError("ERR#0004: data retrieval error while scraping.")
             df_[ativo] = df[ativo].fillna(method='ffill')
-
+        print("Chamou scrapper")
         return df_.dropna()
 
 
