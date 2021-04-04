@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from lxml.html import fromstring
 
 class HistoricalDataScrapper():
-    def get_data(self, ativos_dict):
-        todays_date = datetime.now().date()
-        index = pd.date_range(start = todays_date-timedelta(365), end = todays_date, freq='D')
+
+    def get_data(self,start_date,end_date,ativos_dict):
+        index = pd.date_range(start_date, end = end_date, freq='D')
         columns = [ativo for ativo in ativos_dict]
         df_ = pd.DataFrame(index=index, columns=columns)
 
@@ -17,8 +17,8 @@ class HistoricalDataScrapper():
                 "curr_id": ativos_dict[ativo],
                 "smlID": 300004,
                 'header': ativo+' Historical Data',
-                'st_date': '04/01/2020',
-                'end_date': '04/01/2021',
+                'st_date': start_date.strftime("%m/%d/%Y"),
+                'end_date': end_date.strftime("%m/%d/%Y"),
                 'interval_sec': 'Daily',
                 "sort_col": "date",
                 "sort_ord": "DESC",
