@@ -5,8 +5,7 @@ import pytz
 from datetime import datetime, timedelta
 from lxml.html import fromstring
 
-class Interface():
-
+class HistoricalDataScrapper():
     def get_data(self, ativos_dict):
         todays_date = datetime.now().date()
         index = pd.date_range(start = todays_date-timedelta(365), end = todays_date, freq='D')
@@ -53,22 +52,8 @@ class Interface():
                     commodity_high = float(info[3].replace(',', ''))
                     commodity_low = float(info[4].replace(',', ''))
                     commodity_volume = int(info[5])
-                    # result.insert(len(result),
-                    #               Data(commodity_date, commodity_open, commodity_high, commodity_low,
-                    #                    commodity_close, commodity_volume, currency, None))
                     result.insert(len(result),{'Data':commodity_date,ativo:commodity_close})
-                # if order in ['ascending', 'asc']:
                     result = result[::-1]
-                # elif order in ['descending', 'desc']:
-                #     result = result
-                # if as_json is True:
-                #     json_ = {
-                #         'name': name,
-                #         'recent':
-                #             [value.commodity_as_json() for value in result]
-                #     }
-                #     print(json.dumps(json_, sort_keys=False))
-                # elif as_json is False:
                     df = pd.DataFrame.from_records([value for value in result])
                     df.set_index("Data", inplace=True)
             else:
