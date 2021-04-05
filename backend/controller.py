@@ -26,10 +26,12 @@ def gold_PE_grid():
     ativos_dict = {"Gold Futures": 8830, "GOLD": 13928, "Cobre Futuros": 8831}
     pe_grid = get_yearly_PE_grid(datetime.now().date()-timedelta(365), datetime.now().date(), ativos_dict)
 
+    pe_grid_list = [x.to_dict() for x in pe_grid.get_elements_list()]
+
     message = {
         "status": 200,
         "message": "OK",
-        "pe": pe_grid
+        "pe": pe_grid_list
     }
 
     response = jsonify(message)
